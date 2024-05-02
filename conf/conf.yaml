@@ -1,0 +1,8 @@
+
+
+env: "publish"
+addr: 9999
+dblink: "root:123456@tcp(127.0.0.1:3306)/xfire?charset=utf8&parseTime=true"
+
+loglevel: "info"
+logpath: "/Users/zuojxin/code/xfire/log.log"
