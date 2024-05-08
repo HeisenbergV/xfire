@@ -18,7 +18,7 @@ import (
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
-// @Param     data  body      model.Build
+// @Param     data  body      model.Build true "工艺信息"
 // @Success   200   {object}  response.Response{msg=string}  "创建工艺流程"
 // @Router    /factory/createBuild [post]
 func (s *FactoryApi) CreateBuild(c *gin.Context) {
@@ -103,11 +103,11 @@ func (s *FactoryApi) DeleteBuildByIds(c *gin.Context) {
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
-// @Param     data  body      model.Brand                  true
+// @Param     data  body      model.Build                  true "工艺信息"
 // @Success   200   {object}  response.Response{msg=string}  "修改品牌"
-// @Router    /api/updateBrand [post]
+// @Router    /api/updateBuild [post]
 func (s *FactoryApi) UpdateBuild(c *gin.Context) {
-	var api model.Brand
+	var api model.Build
 	err := c.ShouldBindJSON(&api)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
@@ -118,7 +118,7 @@ func (s *FactoryApi) UpdateBuild(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	err = service.FactoryService.UpdateBrand(api)
+	err = service.FactoryService.UpdateBuild(api)
 	if err != nil {
 		global.LOG.Error("修改失败!", zap.Error(err))
 		response.FailWithMessage("修改失败", c)

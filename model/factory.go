@@ -40,7 +40,7 @@ func (*Build) TableName() string {
 
 const TableNameBrand = "brand"
 
-// Brand mapped from table <brand>
+// Brand
 type Brand struct {
 	ID        int       `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
 	Name      string    `gorm:"column:name;not null;comment:品牌名称" json:"name"` // 品牌名称

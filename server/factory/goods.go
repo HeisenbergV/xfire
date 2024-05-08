@@ -19,9 +19,9 @@ import (
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
-// @Param     data  body      model.Goods
+// @Param     data  body      model.Goods true "产品信息"
 // @Success   200   {object}  response.Response{msg=string}  "创建产品"
-// @Router    /factory/createGoods[post]
+// @Router    /factory/createGoods [post]
 func (s *FactoryApi) CreateGoods(c *gin.Context) {
 	var Goods model.Goods
 	err := c.ShouldBindJSON(&Goods)
@@ -104,7 +104,7 @@ func (s *FactoryApi) DeleteGoodsByIds(c *gin.Context) {
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
-// @Param     data  body      model.Goods                  true
+// @Param     data  body      model.Goods                  true "产品信息"
 // @Success   200   {object}  response.Response{msg=string}  "修改产品"
 // @Router    /api/updateGoods [post]
 func (s *FactoryApi) UpdateGoods(c *gin.Context) {
@@ -134,7 +134,7 @@ func (s *FactoryApi) UpdateGoods(c *gin.Context) {
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
-// @Param     data  body      request.RequestProduction
+// @Param     data  body      request.RequestProduction true "生产信息"
 // @Success   200   {object}  response.Response{msg=string}  "生产"
 // @Router    /factory/production [post]
 func (s *FactoryApi) Production(c *gin.Context) {
@@ -186,7 +186,7 @@ func (s *FactoryApi) Production(c *gin.Context) {
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
-// @Param     data  body      request.GetById                 true
+// @Param     data  body      request.GetById                 true "id"
 // @Success   200   {object}  response.Response{msg=string}  "展示成本"
 // @Router    /api/showCost [post]
 func (s *FactoryApi) ShowCost(c *gin.Context) {

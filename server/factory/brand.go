@@ -21,7 +21,7 @@ type FactoryApi struct {
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
-// @Param     data  body      model.Brand
+// @Param     data  body      model.Brand true "品牌信息"
 // @Success   200   {object}  response.Response{msg=string}  "创建品牌"
 // @Router    /factory/createBrand [post]
 func (s *FactoryApi) CreateBrand(c *gin.Context) {
@@ -102,11 +102,11 @@ func (s *FactoryApi) DeleteBrandByIds(c *gin.Context) {
 
 // UpdateApi
 // @Tags      FactoryApi
-// @Summary   修改基础api
+// @Summary   修改品牌
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
-// @Param     data  body      model.Brand                  true
+// @Param     data  body      model.Brand                  true "品牌信息"
 // @Success   200   {object}  response.Response{msg=string}  "修改品牌"
 // @Router    /api/updateBrand [post]
 func (s *FactoryApi) UpdateBrand(c *gin.Context) {

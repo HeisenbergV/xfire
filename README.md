@@ -1,4 +1,6 @@
 1. 生成orm：gentool -c "./conf/gen.yaml"
+2. swagger生成：
+
 cobra 终端
 
 

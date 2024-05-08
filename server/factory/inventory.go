@@ -13,7 +13,7 @@ import (
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
-// @Param     data  body      request.RequestInventory
+// @Param     data  body      request.RequestInventory true "库存"
 // @Success   200   {object}  response.Response{msg=string}  "生产"
 // @Router    /factory/production [post]
 func (s *FactoryApi) AddInventory(c *gin.Context) {
