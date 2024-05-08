@@ -18,19 +18,31 @@ CREATE TABLE customer (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
-DROP TABLE IF EXISTS product;
-CREATE TABLE product (
+DROP TABLE IF EXISTS goods;
+CREATE TABLE goods (
     id INT PRIMARY KEY AUTO_INCREMENT COMMENT '产品ID',
     name VARCHAR(255) NOT NULL COMMENT '产品名称',
-    brand_id INT NOT NULL COMMENT '品牌',
+    ptype ENUM('原料', '成品')  NOT NULL,
+    brand VARCHAR(255) NOT NULL COMMENT '品牌',
     remake VARCHAR(255) COMMENT '备注',
     barcode VARCHAR(255) NOT NULL UNIQUE COMMENT '产品条码',
-    specification DECIMAL(10, 2) COMMENT '产品规格/g',
-    materialUnit DECIMAL(10, 2) COMMENT '成型重量/g',
+    unit DECIMAL(10, 2) COMMENT '产品规格/g',
     price DECIMAL(10, 2) COMMENT '产品价格',
     build_id INT COMMENT '关联制作工艺' DEFAULT -1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+DROP TABLE IF EXISTS inventory;
+CREATE TABLE inventory (
+    name VARCHAR(255) PRIMARY KEY NOT NULL COMMENT '产品名称',
+    brand VARCHAR(255) NOT NULL COMMENT '品牌',
+    ptype ENUM('原料', '成品')  NOT NULL,
+    unit DECIMAL(10, 2) NOT NULL COMMENT '产品规格/g',
+    remake VARCHAR(255) COMMENT '备注',
+    stock DECIMAL(10, 2) COMMENT '当前库存数量'  NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 DROP TABLE IF EXISTS build;
@@ -39,6 +51,7 @@ CREATE TABLE build (
     name VARCHAR(255) NOT NULL COMMENT '工艺名称',
     remake VARCHAR(255) COMMENT '备注',
     info VARCHAR(1000) COMMENT '制作流程',
+    materialUnit DECIMAL(10, 2) COMMENT '成型重量/g',
     bakingtime  DECIMAL(10, 2)  NOT NULL COMMENT'烘焙时间',
     bakingtem  DECIMAL(10, 2)  NOT NULL COMMENT'烘焙温度',
     water  DECIMAL(10, 2)  NOT NULL COMMENT'水重量g',
@@ -46,44 +59,10 @@ CREATE TABLE build (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
-DROP TABLE IF EXISTS inventory;
-CREATE TABLE inventory (
-    product_name VARCHAR(255) PRIMARY KEY NOT NULL COMMENT '产品名称',
-    specification VARCHAR(255) COMMENT '产品规格',
-    remake VARCHAR(255) COMMENT '备注',
-    unit ENUM('kg', '个', '箱')  NOT NULL,
-    price DECIMAL(10, 2) COMMENT '产品价格'  NOT NULL,
-    stock INT COMMENT '当前库存数量'  NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-
-DROP TABLE IF EXISTS material;
-CREATE TABLE material (
-    id INT PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
-    name VARCHAR(255) NOT NULL UNIQUE COMMENT '原料名称',
-    brand VARCHAR(40) NOT NULL COMMENT '品牌'  NOT NULL,
-    info VARCHAR(255) COMMENT '备注',
-    unit DECIMAL(10, 2)  COMMENT '单位kg'  NOT NULL,
-    price DECIMAL(10, 2) COMMENT '产品单价'  NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-DROP TABLE IF EXISTS material_inventory;
-CREATE TABLE material_inventory (
-    name VARCHAR(255) NOT NULL COMMENT '原料名称',
-    brand INT NOT NULL COMMENT '品牌',
-    remake VARCHAR(255) COMMENT '备注',
-    quantity DECIMAL(10, 2) COMMENT '总量'   NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 DROP TABLE IF EXISTS drp;
 CREATE TABLE drp (
     id INT PRIMARY KEY AUTO_INCREMENT COMMENT '记录ID',
-    product_id INT NOT NULL COMMENT '产品名称',
+    Goods_id INT NOT NULL COMMENT '产品名称',
     remake VARCHAR(255) COMMENT '备注',
     unit VARCHAR(50) COMMENT '产品单位(箱;个等)',
     price DECIMAL(10, 2) COMMENT '单价',

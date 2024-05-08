@@ -12,15 +12,16 @@ type BuildData map[string]float64
 
 // Build mapped from table <build>
 type Build struct {
-	ID         int       `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
-	Name       string    `gorm:"column:name;not null;comment:工艺名称" json:"name"`                     // 工艺名称
-	Remake     string    `gorm:"column:remake;comment:备注" json:"remake"`                            // 备注
-	Info       string    `gorm:"column:info;comment:制作流程" json:"info"`                              // 制作流程
-	Water      float64   `gorm:"column:water;not null;comment:水重量g" json:"water"`                   // 水重量g
-	Bakingtime float64   `gorm:"column:bakingtime;not null;comment:烘焙时间" json:"bakingtime"`         // 水重量g
-	Bakingtem  float64   `gorm:"column:bakingtem;not null;comment:烘焙温度" json:"bakingtem"`           // 水重量g
-	BuildData  BuildData `gorm:"column:build_data;not null;comment:字典 材料id-使用克重" json:"build_data"` // 字典 材料id-使用克重
-	CreatedAt  time.Time `gorm:"column:created_at;default:CURRENT_TIMESTAMP" json:"created_at"`
+	ID           int       `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
+	Name         string    `gorm:"column:name;not null;comment:工艺名称" json:"name"`                     // 工艺名称
+	Remake       string    `gorm:"column:remake;comment:备注" json:"remake"`                            // 备注
+	Info         string    `gorm:"column:info;comment:制作流程" json:"info"`                              // 制作流程
+	MaterialUnit float64   `gorm:"column:materialUnit;not null;comment:成型重量" json:"materialUnit"`     // 水重量g
+	Water        float64   `gorm:"column:water;not null;comment:水重量g" json:"water"`                   // 水重量g
+	Bakingtime   float64   `gorm:"column:bakingtime;not null;comment:烘焙时间" json:"bakingtime"`         // 水重量g
+	Bakingtem    float64   `gorm:"column:bakingtem;not null;comment:烘焙温度" json:"bakingtem"`           // 水重量g
+	BuildData    BuildData `gorm:"column:build_data;not null;comment:字典 材料id-使用克重" json:"build_data"` // 字典 材料id-使用克重
+	CreatedAt    time.Time `gorm:"column:created_at;default:CURRENT_TIMESTAMP" json:"created_at"`
 }
 
 func (c BuildData) Value() (driver.Value, error) {
@@ -74,7 +75,7 @@ const TableNameDrpRecord = "drp_record"
 // DrpRecord mapped from table <drp_record>
 type DrpRecord struct {
 	ID         int       `gorm:"column:id;primaryKey;autoIncrement:true;comment:记录ID" json:"id"` // 记录ID
-	ProductID  int       `gorm:"column:product_id;not null;comment:产品名称" json:"product_id"`      // 产品名称
+	GoodsID    int       `gorm:"column:Goods_id;not null;comment:产品名称" json:"Goods_id"`          // 产品名称
 	Remake     string    `gorm:"column:remake;comment:备注" json:"remake"`                         // 备注
 	Unit       string    `gorm:"column:unit;comment:产品单位(箱;个等)" json:"unit"`                     // 产品单位(箱;个等)
 	Price      float64   `gorm:"column:price;comment:单价" json:"price"`                           // 单价
@@ -94,7 +95,7 @@ const TableNameDrp = "drp"
 // Drp mapped from table <drp>
 type Drp struct {
 	ID         int       `gorm:"column:id;primaryKey;autoIncrement:true;comment:记录ID" json:"id"` // 记录ID
-	ProductID  int       `gorm:"column:product_id;not null;comment:产品名称" json:"product_id"`      // 产品名称
+	GoodsID    int       `gorm:"column:Goods_id;not null;comment:产品名称" json:"Goods_id"`          // 产品名称
 	Remake     string    `gorm:"column:remake;comment:备注" json:"remake"`                         // 备注
 	Unit       string    `gorm:"column:unit;comment:产品单位(箱;个等)" json:"unit"`                     // 产品单位(箱;个等)
 	Price      float64   `gorm:"column:price;comment:单价" json:"price"`                           // 单价
@@ -130,13 +131,14 @@ const TableNameInventory = "inventory"
 
 // Inventory mapped from table <inventory>
 type Inventory struct {
-	ProductName   string    `gorm:"column:product_name;primaryKey;comment:产品名称" json:"product_name"` // 产品名称
-	Specification string    `gorm:"column:specification;comment:产品规格" json:"specification"`          // 产品规格
-	Remake        string    `gorm:"column:remake;comment:备注" json:"remake"`                          // 备注
-	Unit          string    `gorm:"column:unit;not null" json:"unit"`
-	Price         float64   `gorm:"column:price;not null;comment:产品价格" json:"price"`   // 产品价格
-	Stock         int       `gorm:"column:stock;not null;comment:当前库存数量" json:"stock"` // 当前库存数量
-	CreatedAt     time.Time `gorm:"column:created_at;default:CURRENT_TIMESTAMP" json:"created_at"`
+	Name      string    `gorm:"column:name;primaryKey;comment:产品名称" json:"name"` // 产品名称
+	Brand     string    `gorm:"column:brand;not null;comment:品牌" json:"brand"`   // 品牌
+	Ptype     string    `gorm:"column:ptype;not null" json:"ptype"`
+	Unit      float64   `gorm:"column:unit;not null;comment:产品规格/g" json:"unit"`   // 产品规格/g
+	Remake    string    `gorm:"column:remake;comment:备注" json:"remake"`            // 备注
+	Stock     float64   `gorm:"column:stock;not null;comment:当前库存数量" json:"stock"` // 当前库存数量
+	CreatedAt time.Time `gorm:"column:created_at;default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt time.Time `gorm:"column:updated_at;not null;default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
 // TableName Inventory's table name
@@ -144,62 +146,32 @@ func (*Inventory) TableName() string {
 	return TableNameInventory
 }
 
-const TableNameMaterialRecord = "material_record"
+const TableNameGoods = "goods"
 
-// MaterialRecord mapped from table <material_record>
-type MaterialRecord struct {
-	ID        int       `gorm:"column:id;primaryKey;autoIncrement:true;comment:ID" json:"id"` // ID
-	Name      string    `gorm:"column:name;not null;comment:原料名称" json:"name"`                // 原料名称
-	Brand     int       `gorm:"column:brand;not null;comment:品牌" json:"brand"`                // 品牌
-	Remake    string    `gorm:"column:remake;comment:备注" json:"remake"`                       // 备注
-	Unit      string    `gorm:"column:unit;comment:kg" json:"unit"`                           // kg
-	Price     float64   `gorm:"column:price;comment:产品价格" json:"price"`                       // 产品价格
-	Quantity  float64   `gorm:"column:quantity;not null;comment:数量" json:"quantity"`          // 数量
+type Goodstype string
+
+const (
+	Product  Goodstype = "成品"
+	Material Goodstype = "原料"
+)
+
+// Goods mapped from table <goods>
+type Goods struct {
+	ID        int32     `gorm:"column:id;primaryKey;autoIncrement:true;comment:产品ID" json:"id"` // 产品ID
+	Name      string    `gorm:"column:name;not null;comment:产品名称" json:"name"`                  // 产品名称
+	Ptype     Goodstype `gorm:"column:ptype;not null" json:"ptype"`
+	Brand     string    `gorm:"column:brand;not null;comment:品牌" json:"brand"`             // 品牌
+	Remake    string    `gorm:"column:remake;comment:备注" json:"remake"`                    // 备注
+	Barcode   string    `gorm:"column:barcode;not null;comment:产品条码" json:"barcode"`       // 产品条码
+	Unit      float64   `gorm:"column:unit;comment:产品规格/g" json:"unit"`                    // 产品规格/g
+	Price     float64   `gorm:"column:price;comment:产品价格" json:"price"`                    // 产品价格
+	BuildID   int       `gorm:"column:build_id;default:-1;comment:关联制作工艺" json:"build_id"` // 关联制作工艺
 	CreatedAt time.Time `gorm:"column:created_at;default:CURRENT_TIMESTAMP" json:"created_at"`
 }
 
-// TableName MaterialRecord's table name
-func (*MaterialRecord) TableName() string {
-	return TableNameMaterialRecord
-}
-
-const TableNameMaterial = "material"
-
-// Material mapped from table <material>
-type Material struct {
-	ID        int       `gorm:"column:id;primaryKey;autoIncrement:true;comment:ID" json:"id"` // ID
-	Name      string    `gorm:"column:name;not null;comment:原料名称" json:"name"`                // 原料名称
-	Brand     string    `gorm:"column:brand;not null;comment:品牌" json:"brand"`                // 品牌
-	Info      string    `gorm:"column:info;comment:备注" json:"info"`                           // 备注
-	Unit      float64   `gorm:"column:unit;not null;comment:单位kg" json:"unit"`                // 单位kg
-	Price     float64   `gorm:"column:price;not null;comment:产品单价" json:"price"`              // 产品单价
-	CreatedAt time.Time `gorm:"column:created_at;default:CURRENT_TIMESTAMP" json:"created_at"`
-}
-
-// TableName Material's table name
-func (*Material) TableName() string {
-	return TableNameMaterial
-}
-
-const TableNameProduct = "product"
-
-// Product mapped from table <product>
-type Product struct {
-	ID            int       `gorm:"column:id;primaryKey;autoIncrement:true;comment:产品ID" json:"id"` // 产品ID
-	Name          string    `gorm:"column:name;not null;comment:产品名称" json:"name"`                  // 产品名称
-	BrandID       int       `gorm:"column:brand_id;not null;comment:品牌" json:"brand_id"`            // 品牌
-	Remake        string    `gorm:"column:remake;comment:备注" json:"remake"`                         // 备注
-	Barcode       string    `gorm:"column:barcode;not null;comment:产品条码" json:"barcode"`            // 产品条码
-	Specification float64   `gorm:"column:specification;comment:产品规格/g" json:"specification"`       // 产品规格/g
-	MaterialUnit  float64   `gorm:"column:materialUnit;comment:成型/g" json:"materialUnit"`           // 成型重量/g
-	Price         float64   `gorm:"column:price;comment:产品价格" json:"price"`                         // 产品价格
-	BuildID       int       `gorm:"column:build_id" json:"build_id"`
-	CreatedAt     time.Time `gorm:"column:created_at;default:CURRENT_TIMESTAMP" json:"created_at"`
-}
-
-// TableName Product's table name
-func (*Product) TableName() string {
-	return TableNameProduct
+// TableName Goods's table name
+func (*Goods) TableName() string {
+	return TableNameGoods
 }
 
 const TableNameSysLog = "sys_log"

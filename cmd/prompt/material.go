@@ -61,7 +61,7 @@ func (b *materialPrompt) Exec(args []string) bool {
 
 		// Define the data for the first table
 		tableData1 := pterm.TableData{
-			{"ID", "原料", "品牌", "重量(kg)", "单价", "备注", "创建时间"},
+			{"ID", "原料", "品牌", "重量(g)", "单价", "备注", "创建时间"},
 		}
 		for i := range list {
 			tableData1 = append(tableData1, []string{fmt.Sprintf("%d", list[i].ID),

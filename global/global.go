@@ -38,7 +38,7 @@ var (
 	Viper                   *viper.Viper
 	C                       Config
 	LOG                     *zap.Logger
-	material                map[string]*model.Material
+	material                map[string]*model.Goods
 )
 
 func InitConfig(path string) {
@@ -135,17 +135,17 @@ func InitDb(url string) {
 	}
 	DB = db
 
-	var m []model.Material
-	err = DB.Model(&model.Material{}).Find(&m).Error
+	var m []model.Goods
+	err = DB.Model(&model.Goods{}).Where("ptype=?", model.Material).Find(&m).Error
 	if err != nil {
 		log.Panicln("load material err:", err.Error())
 	}
-	material = make(map[string]*model.Material)
+	material = make(map[string]*model.Goods)
 	for _, v := range m {
 		material[v.Name] = &v
 	}
 }
 
-func GetMaterialInfo(name string) *model.Material {
+func GetMaterialInfo(name string) *model.Goods {
 	return material[name]
 }

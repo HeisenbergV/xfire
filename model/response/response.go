@@ -1,6 +1,6 @@
 package response
 
-type ProductCostResponse struct {
+type GoodsCostResponse struct {
 	Yield int     `json:"yield"`
 	Cost  float64 `json:"cost"`
 }

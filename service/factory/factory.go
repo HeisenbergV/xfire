@@ -185,17 +185,21 @@ func (f *Factory) UpdateCustomer(customer model.Customer) error {
 	}).Error
 }
 
-func (f *Factory) GetProduct(id int) (*model.Product, error) {
-	var b model.Product
-	err := global.DB.First(&b, "id = ?", id).Error
-	if err != nil {
-		return nil, err
-	}
-	return &b, nil
+func (f *Factory) GetGoodsInfo(id int) (model.Goods, error) {
+	var b model.Goods
+	err := global.DB.First(&b, "id =? ", id).Error
+	return b, err
 }
-func (f *Factory) GetProductList(info request.PageInfo, order string, desc bool) (list interface{}, total int64, err error) {
-	db := global.DB.Model(&model.Product{})
-	var plist []model.Product
+
+func (f *Factory) GetGoods(id []int) ([]model.Goods, error) {
+	var b []model.Goods
+	err := global.DB.Find(&b, "id in(?) ", id).Error
+	return b, err
+}
+
+func (f *Factory) GetGoodsList(ptype model.Goodstype, info request.PageInfo, order string, desc bool) (list interface{}, total int64, err error) {
+	db := global.DB.Model(&model.Goods{}).Where("ptype=?", ptype)
+	var plist []model.Goods
 	err = db.Count(&total).Error
 
 	if err != nil {
@@ -231,93 +235,41 @@ func (f *Factory) GetProductList(info request.PageInfo, order string, desc bool)
 	return plist, total, err
 }
 
-func (f *Factory) CreateProduct(product model.Product) error {
+func (f *Factory) CreateGoods(Goods model.Goods) error {
 	//无此品牌
-	if err := global.DB.Model(&model.Brand{}).Where("id=?", product.BrandID).First(&model.Brand{}).Error; err != nil {
+	if err := global.DB.Model(&model.Brand{}).Where("name=?", Goods.Brand).First(&model.Brand{}).Error; err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			return err
 		}
 	}
 	//产品名称+品牌 重复
-	var duplicateProduct model.Product
-	if err := global.DB.Where("name = ? and brand_id=?", product.Name, product.BrandID).First(&duplicateProduct).Error; err != nil {
+	var duplicateGoods model.Goods
+	if err := global.DB.Where("name = ? and brand=?", Goods.Name, Goods.Brand).First(&duplicateGoods).Error; err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			return err
 		}
 	}
 
-	return global.DB.Create(product).Error
+	return global.DB.Create(Goods).Error
 }
 
-func (f *Factory) DelProduct(id []int) error {
-	err := global.DB.Where("id in(?)", id).Delete(&model.Product{}).Error
+func (f *Factory) DelGoods(id []int) error {
+	err := global.DB.Where("id in(?)", id).Delete(&model.Goods{}).Error
 	return err
 }
 
-func (f *Factory) UpdateProduct(product model.Product) error {
-	return global.DB.Model(&product).Where("id=?", product.ID).Updates(&model.Product{
-		Name: product.Name, BrandID: product.BrandID, Remake: product.Remake,
-		Barcode: product.Barcode, Specification: product.Specification, MaterialUnit: product.MaterialUnit,
-		Price: product.Price, BuildID: product.BuildID,
+func (f *Factory) UpdateGoods(Goods model.Goods) error {
+	return global.DB.Model(&Goods).Where("id=?", Goods.ID).Updates(&model.Goods{
+		Name: Goods.Name, Brand: Goods.Brand, Remake: Goods.Remake,
+		Barcode: Goods.Barcode, Unit: Goods.Unit,
+		Price: Goods.Price, BuildID: Goods.BuildID,
 	}).Error
 }
 
-// material
-// 原材料增减品类,修改品类信息
-func (f *Factory) AddMaterial(material model.Material) error {
-	var m model.Material
-	if err := global.DB.First(&m, "name = ? and brand = ?", material.Name, material.Brand).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return global.DB.Create(&material).Error
-		} else {
-			return errors.New("add material fail")
-		}
-	} else {
-		return errors.New("add  material fail")
-	}
+func (f *Factory) ReduceGoods(id int, quantity float64) error {
+	return global.DB.Model(&model.Goods{}).Where("id = ? ", id).Update("stock", gorm.Expr("stock- ?", quantity)).Error
 }
 
-func (f *Factory) DelMaterial(id int) error {
-	return global.DB.Where("id=?", id).Delete(&model.Material{}).Error
-}
-
-// 只有材料进货与消耗才会修改quantity
-func (f *Factory) UpdateMaterial(material model.Material) error {
-	return global.DB.Where("id=?", material.ID).Updates(&model.Material{
-		Name:  material.Name,
-		Brand: material.Brand,
-		Info:  material.Info,
-		Unit:  material.Unit,
-		Price: material.Price,
-	}).Error
-}
-
-// 原材料消耗与 使用
-func (f *Factory) ReplenishConsumeMaterial(id int, quantity float64) error {
-	var material model.Material
-	if err := global.DB.First(&material, "id = ? ", id).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return errors.New("material find error")
-		}
-	} else {
-		// global.DB.Where("id=?", material.ID).Update("quantity", material.Quantity+quantity)
-	}
-	return errors.New("not this material")
-}
-
-// 展示材料价格、剩余
-func (f *Factory) GetMaterial(id int) (m *model.Material, err error) {
-	err = global.DB.Where("id=?", id).First(&m).Error
-	return
-}
-
-// 展示材料价格、剩余
-func (f *Factory) GetMaterials(id []int) (m []model.Material, err error) {
-	err = global.DB.Find(&m, id).Error
-	return
-}
-
-func (f *Factory) GetMaterialList() (mlist []model.Material, err error) {
-	err = global.DB.Find(&mlist).Error
-	return
+func (f *Factory) AddGoods(id int, quantity float64) error {
+	return global.DB.Model(&model.Goods{}).Where("id = ? ", id).Update("stock", gorm.Expr("stock+ ?", quantity)).Error
 }

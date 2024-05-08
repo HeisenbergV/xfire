@@ -12,18 +12,18 @@ import (
 	"github.com/pterm/pterm"
 )
 
-type productPrompt struct {
+type GoodsPrompt struct {
 	args map[string]int //参数名；参数数量
 }
 
-func (*productPrompt) Name() string {
-	return "productPrompt"
+func (*GoodsPrompt) Name() string {
+	return "GoodsPrompt"
 }
-func (*productPrompt) Level() int {
+func (*GoodsPrompt) Level() int {
 	return 2
 }
 
-func (*productPrompt) Prompt(d prompt.Document) []prompt.Suggest {
+func (*GoodsPrompt) Prompt(d prompt.Document) []prompt.Suggest {
 	s := []prompt.Suggest{
 		{Text: "list", Description: "查看产品"},
 		{Text: "info", Description: "产品细节 e.g:info id "},
@@ -32,13 +32,13 @@ func (*productPrompt) Prompt(d prompt.Document) []prompt.Suggest {
 	return prompt.FilterHasPrefix(s, d.GetWordBeforeCursor(), true)
 }
 
-func (*productPrompt) Show() {
+func (*GoodsPrompt) Show() {
 	fmt.Println("产品管理")
 	fmt.Println("list info")
 	fmt.Println("")
 }
 
-func (b *productPrompt) Exec(args []string) bool {
+func (b *GoodsPrompt) Exec(args []string) bool {
 	if args[0] == "q" {
 		return true
 	}
@@ -52,22 +52,22 @@ func (b *productPrompt) Exec(args []string) bool {
 		return false
 	}
 	if cmd == "list" {
-		data, _, err := service.FactoryService.GetProductList(request.PageInfo{Page: 0, PageSize: 10000}, "", true)
+		data, _, err := service.FactoryService.GetGoodsList(request.PageInfo{Page: 0, PageSize: 10000}, "", true)
 
 		if err != nil {
 			fmt.Println("查询失败")
 			return false
 		}
-		list := data.([]model.Product)
+		list := data.([]model.Goods)
 		tableData1 := pterm.TableData{
 			{"ID", "名称", "编码", "重量/g", "单价"},
 		}
 
-		for _, product := range list {
-			brand, _ := service.FactoryService.GetBrand(int(product.BrandID))
-			tableData1 = append(tableData1, []string{fmt.Sprintf("%d", product.ID), fmt.Sprintf("%s(%s)", product.Name, brand.Name),
-				product.Barcode, fmt.Sprintf("%.2f", product.Specification),
-				fmt.Sprintf("%.2f", product.Price),
+		for _, Goods := range list {
+			brand, _ := service.FactoryService.GetBrand(int(Goods.BrandID))
+			tableData1 = append(tableData1, []string{fmt.Sprintf("%d", Goods.ID), fmt.Sprintf("%s(%s)", Goods.Name, brand.Name),
+				Goods.Barcode, fmt.Sprintf("%.2f", Goods.Specification),
+				fmt.Sprintf("%.2f", Goods.Price),
 			})
 		}
 
@@ -79,13 +79,13 @@ func (b *productPrompt) Exec(args []string) bool {
 			fmt.Println("参数错误")
 			return false
 		}
-		productInfo, err := service.FactoryService.GetProduct(id)
+		GoodsInfo, err := service.FactoryService.GetGoods(id)
 		if err != nil {
 			fmt.Println("查询失败")
 			return false
 		}
 
-		binfo, err := service.FactoryService.GetBuildInfo(int(productInfo.BuildID))
+		binfo, err := service.FactoryService.GetBuildInfo(int(GoodsInfo.BuildID))
 		if err != nil {
 			fmt.Println("查询失败")
 			return false
@@ -112,13 +112,13 @@ func (b *productPrompt) Exec(args []string) bool {
 				})
 
 			materialinfo := global.GetMaterialInfo(mname)
-			cost += ratio / (materialinfo.Unit * 1000) * materialinfo.Price
+			cost += ratio / (materialinfo.Unit) * materialinfo.Price
 			// fmt.Printf("%s:%.2fg - %.2f \n", v.Name, useG, useG/(v.Unit*1000)*v.Price)
 			sumWeight += ratio
 		}
 		sumWeight += binfo.Water
-		num := int(sumWeight / productInfo.MaterialUnit)
-		costSum := float64(num)*productInfo.Price - cost
+		num := int(sumWeight / GoodsInfo.MaterialUnit)
+		costSum := float64(num)*GoodsInfo.Price - cost
 		pterm.DefaultBasicText.Printf(pterm.LightMagenta("%s\n"), binfo.Name)
 		pterm.DefaultBasicText.Printf(pterm.LightMagenta("一袋面原料成本约:%.2f \n"), cost)
 		pterm.DefaultBasicText.Printf(pterm.LightMagenta("大约做 %d 个 \n"), num)

@@ -33,7 +33,6 @@ func main() {
 	global.InitLogger()
 	global.InitDb(global.C.Dblink)
 	Router := router.Routers()
-	Router.Static("/form-generator", "./resource/page")
 
 	address := fmt.Sprintf(":%d", global.C.Addr)
 	s := initServer(address, Router)

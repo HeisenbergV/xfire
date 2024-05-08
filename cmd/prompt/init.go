@@ -49,7 +49,7 @@ func register() {
 	PromptMap = make(map[string]PromptHandler)
 	PromptMap["basic"] = &basicPrompt{}
 	PromptMap["admin"] = &adminPrompt{}
-	PromptMap["product"] = &productPrompt{args: map[string]int{
+	PromptMap["Goods"] = &GoodsPrompt{args: map[string]int{
 		"list": 1,
 		"info": 2,
 	}}
