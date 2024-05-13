@@ -3,9 +3,37 @@ package router
 import (
 	"xfire/global"
 	"xfire/server/factory"
+	"xfire/server/news"
 
 	"github.com/gin-gonic/gin"
 )
+
+func FactoryRouter(r *gin.Engine) {
+	api := new(factory.FactoryApi)
+	factoryRouter := r.Group("factory")
+	factoryRouter.POST("createBrand", api.CreateBrand)
+	factoryRouter.POST("createBuild", api.CreateBuild)
+	factoryRouter.POST("createGoods", api.CreateGoods)
+
+	factoryRouter.POST("deleteBrandByIds", api.DeleteBrandByIds)
+	factoryRouter.POST("deleteBuildByIds", api.DeleteBuildByIds)
+	factoryRouter.POST("deleteGoodsByIds", api.DeleteGoodsByIds)
+
+	factoryRouter.POST("getBrandList", api.GetBrandList)
+	factoryRouter.POST("getBuildList", api.GetBuildList)
+	factoryRouter.POST("getGoodsList", api.GetGoodsList)
+
+	factoryRouter.POST("updateBrand", api.UpdateBrand)
+	factoryRouter.POST("updateBuild", api.UpdateBuild)
+	factoryRouter.POST("updateGoods", api.UpdateGoods)
+	factoryRouter.POST("showCost", api.ShowCost)
+}
+
+func NewRouter(r *gin.Engine) {
+	api := new(news.News)
+	newsRouter := r.Group("news")
+	newsRouter.POST("getGoodsList", api.GetGoodsList)
+}
 
 func Routers() *gin.Engine {
 	// 设置为发布模式
@@ -18,27 +46,8 @@ func Routers() *gin.Engine {
 	if global.C.Env != "public" {
 		Router.Use(gin.Logger())
 	}
-
-	api := new(factory.FactoryApi)
-	Router.POST("factory/createBrand", api.CreateBrand)
-	Router.POST("factory/createBuild", api.CreateBuild)
-	Router.POST("factory/createGoods", api.CreateGoods)
-
-	Router.POST("factory/deleteBrandByIds", api.DeleteBrandByIds)
-	Router.POST("factory/deleteBuildByIds", api.DeleteBuildByIds)
-	Router.POST("factory/deleteGoodsByIds", api.DeleteGoodsByIds)
-
-	Router.POST("factory/getBrandList", api.GetBrandList)
-	Router.POST("factory/getBuildList", api.GetBuildList)
-	Router.POST("factory/getGoodsList", api.GetGoodsList)
-
-	Router.POST("factory/updateBrand", api.UpdateBrand)
-	Router.POST("factory/updateBuild", api.UpdateBuild)
-	Router.POST("factory/updateGoods", api.UpdateGoods)
-	Router.POST("factory/showCost", api.ShowCost)
-
-	// apiRouter.DELETE("deleteApisByIds", apiRouterApi.DeleteApisByIds)
-
+	FactoryRouter(Router)
+	NewRouter(Router)
 	global.LOG.Info("router register success")
 	return Router
 }

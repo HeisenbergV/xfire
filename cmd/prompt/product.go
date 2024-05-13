@@ -37,7 +37,10 @@ func (*GoodsPrompt) Show() {
 	fmt.Println("list info")
 	fmt.Println("")
 }
-
+func Decimal(num float64) float64 {
+	num, _ = strconv.ParseFloat(fmt.Sprintf("%.2f", num), 64)
+	return num
+}
 func (b *GoodsPrompt) Exec(args []string) bool {
 	if args[0] == "q" {
 		return true
@@ -52,7 +55,7 @@ func (b *GoodsPrompt) Exec(args []string) bool {
 		return false
 	}
 	if cmd == "list" {
-		data, _, err := service.FactoryService.GetGoodsList(request.PageInfo{Page: 0, PageSize: 10000}, "", true)
+		data, _, err := service.FactoryService.GetGoodsList(model.Product, request.PageInfo{Page: 0, PageSize: 10000}, "", true)
 
 		if err != nil {
 			fmt.Println("查询失败")
@@ -64,9 +67,8 @@ func (b *GoodsPrompt) Exec(args []string) bool {
 		}
 
 		for _, Goods := range list {
-			brand, _ := service.FactoryService.GetBrand(int(Goods.BrandID))
-			tableData1 = append(tableData1, []string{fmt.Sprintf("%d", Goods.ID), fmt.Sprintf("%s(%s)", Goods.Name, brand.Name),
-				Goods.Barcode, fmt.Sprintf("%.2f", Goods.Specification),
+			tableData1 = append(tableData1, []string{fmt.Sprintf("%d", Goods.ID), fmt.Sprintf("%s(%s)", Goods.Name, Goods.Brand),
+				Goods.Barcode, fmt.Sprintf("%.2f", Goods.Unit),
 				fmt.Sprintf("%.2f", Goods.Price),
 			})
 		}
@@ -79,13 +81,14 @@ func (b *GoodsPrompt) Exec(args []string) bool {
 			fmt.Println("参数错误")
 			return false
 		}
-		GoodsInfo, err := service.FactoryService.GetGoods(id)
+		GoodsInfo, err := service.FactoryService.GetGoodsInfo(id)
+		fmt.Println(GoodsInfo)
 		if err != nil {
 			fmt.Println("查询失败")
 			return false
 		}
 
-		binfo, err := service.FactoryService.GetBuildInfo(int(GoodsInfo.BuildID))
+		binfo, err := service.FactoryService.GetBuildInfo(GoodsInfo.BuildID)
 		if err != nil {
 			fmt.Println("查询失败")
 			return false
@@ -112,16 +115,21 @@ func (b *GoodsPrompt) Exec(args []string) bool {
 				})
 
 			materialinfo := global.GetMaterialInfo(mname)
-			cost += ratio / (materialinfo.Unit) * materialinfo.Price
+			if materialinfo == nil {
+				fmt.Println("异常：没有此材料:", mname)
+				return false
+			}
+			cost += ratio * (materialinfo.Price / materialinfo.Unit)
+			fmt.Println(mname, ratio*(materialinfo.Price/materialinfo.Unit))
 			// fmt.Printf("%s:%.2fg - %.2f \n", v.Name, useG, useG/(v.Unit*1000)*v.Price)
 			sumWeight += ratio
 		}
 		sumWeight += binfo.Water
-		num := int(sumWeight / GoodsInfo.MaterialUnit)
+		num := int(sumWeight / 80)
 		costSum := float64(num)*GoodsInfo.Price - cost
 		pterm.DefaultBasicText.Printf(pterm.LightMagenta("%s\n"), binfo.Name)
 		pterm.DefaultBasicText.Printf(pterm.LightMagenta("一袋面原料成本约:%.2f \n"), cost)
-		pterm.DefaultBasicText.Printf(pterm.LightMagenta("大约做 %d 个 \n"), num)
+		pterm.DefaultBasicText.Printf("大约做 %d 个 单品价格:%.2f \n", num, GoodsInfo.Price)
 		pterm.DefaultBasicText.Printf(pterm.LightMagenta("一袋面利润约（不算人工水电费等）:%.2f元; 单个利润约: %.2f元 \n"), costSum, costSum/float64(num))
 
 		pterm.DefaultBulletList.WithItems(bulletListItems).Render()

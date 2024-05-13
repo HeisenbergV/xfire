@@ -1,20 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"time"
+	"xfire/cmd"
 	"xfire/global"
-	"xfire/router"
 
 	"xfire/docs"
 
-	swaggerFiles "github.com/swaggo/files"
-
 	"github.com/fvbock/endless"
 	"github.com/gin-gonic/gin"
-	ginSwagger "github.com/swaggo/gin-swagger"
-	"go.uber.org/zap"
 	_ "gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -46,17 +41,17 @@ func main() {
 	global.InitConfig(os.Args[1])
 	global.InitLogger()
 	global.InitDb(global.C.Dblink)
-	Router := router.Routers()
+	// Router := router.Routers()
 
-	// use ginSwagger middleware to serve the API docs
-	Router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	// // use ginSwagger middleware to serve the API docs
+	// Router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	address := fmt.Sprintf(":%d", global.C.Addr)
-	s := initServer(address, Router)
-	global.LOG.Info(fmt.Sprintf("swagger addr: %s/swagger/index.html", address))
+	// address := fmt.Sprintf(":%d", global.C.Addr)
+	// s := initServer(address, Router)
+	// global.LOG.Info(fmt.Sprintf("swagger addr: %s/swagger/index.html", address))
 
-	global.LOG.Info("server run success on ", zap.String("address", address))
+	// global.LOG.Info("server run success on ", zap.String("address", address))
 
-	global.LOG.Error(s.ListenAndServe().Error())
-	// cmd.RunPrompt()
+	// global.LOG.Error(s.ListenAndServe().Error())
+	cmd.RunPrompt()
 }

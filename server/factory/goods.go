@@ -13,121 +13,6 @@ import (
 	"go.uber.org/zap"
 )
 
-// CreateApi
-// @Tags      FactoryApi
-// @Summary   创建产品
-// @Security  ApiKeyAuth
-// @accept    application/json
-// @Produce   application/json
-// @Param     data  body      model.Goods true "产品信息"
-// @Success   200   {object}  response.Response{msg=string}  "创建产品"
-// @Router    /factory/createGoods [post]
-func (s *FactoryApi) CreateGoods(c *gin.Context) {
-	var Goods model.Goods
-	err := c.ShouldBindJSON(&Goods)
-	if err != nil {
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
-	err = service.FactoryService.CreateGoods(Goods)
-	if err != nil {
-		global.LOG.Error("创建失败!", zap.Error(err))
-		response.FailWithMessage("创建失败", c)
-		return
-	}
-	response.OkWithMessage("创建成功", c)
-}
-
-// GetApiList
-// @Tags      FactoryApi
-// @Summary   分页获取prduct
-// @Security  ApiKeyAuth
-// @accept    application/json
-// @Produce   application/json
-// @Param     data  body      request.SearchGoodsParams                               true  "产品列表"
-// @Success   200   {object}  response.Response{data=response.PageResult,msg=string}  "分页获取产品列表,返回包括列表,总数,页码,每页数量"
-// @Router    /factory/getGoodsList [post]
-func (s *FactoryApi) GetGoodsList(c *gin.Context) {
-	var pageInfo request.SearchGoodsParams
-	err := c.ShouldBindJSON(&pageInfo)
-	if err != nil {
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
-	err = utils.Verify(pageInfo.PageInfo, utils.PageInfoVerify)
-	if err != nil {
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
-	list, total, err := service.FactoryService.GetGoodsList(pageInfo.Ptype, pageInfo.PageInfo, pageInfo.OrderKey, pageInfo.Desc)
-	if err != nil {
-		global.LOG.Error("获取失败!", zap.Error(err))
-		response.FailWithMessage("获取失败", c)
-		return
-	}
-	response.OkWithDetailed(response.PageResult{
-		List:     list,
-		Total:    total,
-		Page:     pageInfo.Page,
-		PageSize: pageInfo.PageSize,
-	}, "获取成功", c)
-}
-
-// DeleteBrandByIds
-// @Tags      FactoryApi
-// @Summary   删除
-// @Security  ApiKeyAuth
-// @accept    application/json
-// @Produce   application/json
-// @Param     data  body      request.IdsReq                 true  "ID"
-// @Success   200   {object}  response.Response{msg=string}  "删除"
-// @Router    /api/DeleteGoodsByIds [delete]
-func (s *FactoryApi) DeleteGoodsByIds(c *gin.Context) {
-	var ids request.IdsReq
-	err := c.ShouldBindJSON(&ids)
-	if err != nil {
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
-	err = service.FactoryService.DelGoods(ids.Ids)
-	if err != nil {
-		global.LOG.Error("删除失败!", zap.Error(err))
-		response.FailWithMessage("删除失败", c)
-		return
-	}
-	response.OkWithMessage("删除成功", c)
-}
-
-// UpdateApi
-// @Tags      FactoryApi
-// @Summary   修改基础api
-// @Security  ApiKeyAuth
-// @accept    application/json
-// @Produce   application/json
-// @Param     data  body      model.Goods                  true "产品信息"
-// @Success   200   {object}  response.Response{msg=string}  "修改产品"
-// @Router    /api/updateGoods [post]
-func (s *FactoryApi) UpdateGoods(c *gin.Context) {
-	var api model.Goods
-	err := c.ShouldBindJSON(&api)
-	if err != nil {
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
-	err = utils.Verify(api, utils.ApiVerify)
-	if err != nil {
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
-	err = service.FactoryService.UpdateGoods(api)
-	if err != nil {
-		global.LOG.Error("修改失败!", zap.Error(err))
-		response.FailWithMessage("修改失败", c)
-		return
-	}
-	response.OkWithMessage("修改成功", c)
-}
-
 // Production
 // @Tags      FactoryApi
 // @Summary   生产
@@ -229,4 +114,118 @@ func (s *FactoryApi) ShowCost(c *gin.Context) {
 	response.OkWithDetailed(response.GoodsCostResponse{
 		Yield: yield, Cost: cost,
 	}, "获取成功", c)
+}
+
+// CreateApi
+// @Tags      FactoryApi
+// @Summary   创建产品
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data  body      model.Goods true "产品信息"
+// @Success   200   {object}  response.Response{msg=string}  "创建产品"
+// @Router    /factory/createGoods [post]
+func (s *FactoryApi) CreateGoods(c *gin.Context) {
+	var Goods model.Goods
+	err := c.ShouldBindJSON(&Goods)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	err = service.FactoryService.CreateGoods(Goods)
+	if err != nil {
+		global.LOG.Error("创建失败!", zap.Error(err))
+		response.FailWithMessage("创建失败", c)
+		return
+	}
+	response.OkWithMessage("创建成功", c)
+}
+
+// GetApiList
+// @Tags      FactoryApi
+// @Summary   产品信息展示
+// @accept    application/json
+// @Produce   application/json
+// @Param     data  body      request.SearchGoodsParams                               true  "产品列表"
+// @Success   200   {object}  response.Response{data=response.PageResult,msg=string}  "分页获取产品列表,返回包括列表,总数,页码,每页数量"
+// @Router    /factory/getGoodsList [post]
+func (s *FactoryApi) GetGoodsList(c *gin.Context) {
+	var pageInfo request.SearchGoodsParams
+	err := c.ShouldBindJSON(&pageInfo)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	err = utils.Verify(pageInfo.PageInfo, utils.PageInfoVerify)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	list, total, err := service.FactoryService.GetGoodsList(pageInfo.Ptype, pageInfo.PageInfo, pageInfo.OrderKey, pageInfo.Desc)
+	if err != nil {
+		global.LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+		return
+	}
+	response.OkWithDetailed(response.PageResult{
+		List:     list,
+		Total:    total,
+		Page:     pageInfo.Page,
+		PageSize: pageInfo.PageSize,
+	}, "获取成功", c)
+}
+
+// DeleteBrandByIds
+// @Tags      FactoryApi
+// @Summary   删除
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data  body      request.IdsReq                 true  "ID"
+// @Success   200   {object}  response.Response{msg=string}  "删除"
+// @Router    /api/DeleteGoodsByIds [delete]
+func (s *FactoryApi) DeleteGoodsByIds(c *gin.Context) {
+	var ids request.IdsReq
+	err := c.ShouldBindJSON(&ids)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	err = service.FactoryService.DelGoods(ids.Ids)
+	if err != nil {
+		global.LOG.Error("删除失败!", zap.Error(err))
+		response.FailWithMessage("删除失败", c)
+		return
+	}
+	response.OkWithMessage("删除成功", c)
+}
+
+// UpdateApi
+// @Tags      FactoryApi
+// @Summary   修改基础api
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data  body      model.Goods                  true "产品信息"
+// @Success   200   {object}  response.Response{msg=string}  "修改产品"
+// @Router    /api/updateGoods [post]
+func (s *FactoryApi) UpdateGoods(c *gin.Context) {
+	var api model.Goods
+	err := c.ShouldBindJSON(&api)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	err = utils.Verify(api, utils.ApiVerify)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	err = service.FactoryService.UpdateGoods(api)
+	if err != nil {
+		global.LOG.Error("修改失败!", zap.Error(err))
+		response.FailWithMessage("修改失败", c)
+		return
+	}
+	response.OkWithMessage("修改成功", c)
 }

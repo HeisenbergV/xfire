@@ -2,12 +2,8 @@ package prompt
 
 import (
 	"fmt"
-	"strconv"
-	"xfire/model"
-	"xfire/service"
 
 	"github.com/c-bata/go-prompt"
-	"github.com/pterm/pterm"
 )
 
 type materialPrompt struct {
@@ -53,59 +49,59 @@ func (b *materialPrompt) Exec(args []string) bool {
 		return false
 	}
 	if cmd == "list" {
-		list, err := service.FactoryService.GetMaterialList()
-		if err != nil {
-			fmt.Println("查询失败")
-			return false
-		}
+		// list, err := service.FactoryService.GetMaterialList()
+		// if err != nil {
+		// 	fmt.Println("查询失败")
+		// 	return false
+		// }
 
-		// Define the data for the first table
-		tableData1 := pterm.TableData{
-			{"ID", "原料", "品牌", "重量(g)", "单价", "备注", "创建时间"},
-		}
-		for i := range list {
-			tableData1 = append(tableData1, []string{fmt.Sprintf("%d", list[i].ID),
-				list[i].Name, list[i].Brand, fmt.Sprintf("%.2f", list[i].Unit),
-				fmt.Sprintf("%.2f", list[i].Unit), list[i].Info, list[i].CreatedAt.Format("2006-01-02")})
-		}
-		pterm.DefaultTable.WithHasHeader().WithData(tableData1).Render()
+		// // Define the data for the first table
+		// tableData1 := pterm.TableData{
+		// 	{"ID", "原料", "品牌", "重量(g)", "单价", "备注", "创建时间"},
+		// }
+		// for i := range list {
+		// 	tableData1 = append(tableData1, []string{fmt.Sprintf("%d", list[i].ID),
+		// 		list[i].Name, list[i].Brand, fmt.Sprintf("%.2f", list[i].Unit),
+		// 		fmt.Sprintf("%.2f", list[i].Unit), list[i].Info, list[i].CreatedAt.Format("2006-01-02")})
+		// }
+		// pterm.DefaultTable.WithHasHeader().WithData(tableData1).Render()
 	} else if cmd == "add" {
-		unit, err := strconv.ParseFloat(args[4], 64)
-		if err != nil {
-			fmt.Println("参数错误")
-			return false
-		}
-		p, err := strconv.ParseFloat(args[5], 64)
-		if err != nil {
-			fmt.Println("参数错误")
-			return false
-		} ////add 酵母 安琪 三合的 10 190
-		//name brand info unit price
-		err = service.FactoryService.AddMaterial(model.Material{Name: args[1], Brand: args[2],
-			Info: args[3], Unit: unit, Price: p,
-		})
-		if err != nil {
-			fmt.Println("添加失败")
-		} else {
-			fmt.Println("添加成功")
-		}
+		// unit, err := strconv.ParseFloat(args[4], 64)
+		// if err != nil {
+		// 	fmt.Println("参数错误")
+		// 	return false
+		// }
+		// p, err := strconv.ParseFloat(args[5], 64)
+		// if err != nil {
+		// 	fmt.Println("参数错误")
+		// 	return false
+		// } ////add 酵母 安琪 三合的 10 190
+		// //name brand info unit price
+		// err = service.FactoryService.AddGoods(model.Goods{Name: args[1], Brand: args[2],
+		// 	Remake: args[3], Unit: unit, Price: p,
+		// })
+		// if err != nil {
+		// 	fmt.Println("添加失败")
+		// } else {
+		// 	fmt.Println("添加成功")
+		// }
 
 	} else if cmd == "update" {
 		fmt.Println("todo")
 
 	} else if cmd == "rm" {
-		id, err := strconv.Atoi(args[1])
-		if err != nil {
-			fmt.Println("参数错误")
-			return false
-		}
+		// id, err := strconv.Atoi(args[1])
+		// if err != nil {
+		// 	fmt.Println("参数错误")
+		// 	return false
+		// }
 
-		err = service.FactoryService.DelMaterial(id)
-		if err != nil {
-			fmt.Println("删除失败")
-		} else {
-			fmt.Println("删除成功")
-		}
+		// err = service.FactoryService.DelMaterial(id)
+		// if err != nil {
+		// 	fmt.Println("删除失败")
+		// } else {
+		// 	fmt.Println("删除成功")
+		// }
 	}
 
 	return false
