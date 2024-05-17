@@ -10,10 +10,10 @@ const allGoods = [{
   storeId: '1000',
   spuId: '0',
   title: '麦小六果子面包',
-  primaryImage: 'https://i.ibb.co/HFjR2ZR/image.jpg',
+  primaryImage: 'https://s2.loli.net/2024/05/17/N6RGovQlj2p9eEJ.jpg',
   images: [
-    'https://i.ibb.co/HFjR2ZR/image.jpg',
-    'https://i.ibb.co/HFjR2ZR/image.jpg',
+    'https://s2.loli.net/2024/05/17/N6RGovQlj2p9eEJ.jpg',
+    'https://s2.loli.net/2024/05/17/N6RGovQlj2p9eEJ.jpg',
   ],
   spuTagList: [{
     id: '13001',
@@ -30,10 +30,10 @@ const allGoods = [{
   storeId: '1000',
   spuId: '0',
   title: '俄罗斯大列巴',
-  primaryImage: 'https://i.ibb.co/DbjtncN/image.jpg',
+  primaryImage: 'https://s2.loli.net/2024/05/17/NVCKeMxdu2tgmyY.jpg',
   images: [
-    'https://i.ibb.co/DbjtncN/image.jpg',
-    'https://i.ibb.co/DbjtncN/image.jpg',
+    'https://s2.loli.net/2024/05/17/NVCKeMxdu2tgmyY.jpg',
+    'https://s2.loli.net/2024/05/17/NVCKeMxdu2tgmyY.jpg',
   ],
   spuTagList: [{
     id: '13001',
@@ -50,10 +50,10 @@ const allGoods = [{
   storeId: '1000',
   spuId: '0',
   title: '无蔗糖吐司面包',
-  primaryImage: 'https://i.ibb.co/51Ncbn3/image.jpg',
+  primaryImage: 'https://s2.loli.net/2024/05/17/lDVf8KoqyUd7wJs.jpg',
   images: [
-    'https://i.ibb.co/51Ncbn3/image.jpg',
-    'https://i.ibb.co/51Ncbn3/image.jpg',
+    'https://s2.loli.net/2024/05/17/lDVf8KoqyUd7wJs.jpg',
+    'https://s2.loli.net/2024/05/17/lDVf8KoqyUd7wJs.jpg',
   ],
   spuTagList: [{
     id: '13001',
@@ -70,10 +70,10 @@ const allGoods = [{
   storeId: '1000',
   spuId: '0',
   title: '俄罗斯小列巴',
-  primaryImage: 'https://i.ibb.co/wrcrzPZ/image.jpg',
+  primaryImage: 'https://s2.loli.net/2024/05/17/sMTkohBtlNnwviy.jpg',
   images: [
-    'https://i.ibb.co/wrcrzPZ/image.jpg',
-    'https://i.ibb.co/wrcrzPZ/image.jpg',
+    'https://s2.loli.net/2024/05/17/sMTkohBtlNnwviy.jpg',
+    'https://s2.loli.net/2024/05/17/sMTkohBtlNnwviy.jpg',
   ],
   spuTagList: [{
     id: '13001',
