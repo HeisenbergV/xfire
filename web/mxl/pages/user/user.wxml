@@ -1,0 +1,13 @@
+<!--pages/about/about.wxml-->
+<view>
+  <view class="header">
+    <image src="{{ developer.img }}"></image>
+    <text>微信扫一扫添加微信</text>
+  </view>
+  <view class="main">
+    <view class="developerItemView" wx:for="{{ developer.items }}" wx:key="index">
+      <view>{{ item.title }}</view>
+      <view>{{ item.text }}</view>
+    </view>
+  </view>
+</view>

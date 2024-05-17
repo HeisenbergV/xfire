@@ -1,18 +1,13 @@
 {
   "pages": [
     "pages/home/home",
-    "pages/usercenter/index",
-    "pages/usercenter/person-info/index",
-    "pages/usercenter/address/list/index",
-    "pages/usercenter/address/edit/index",
+    "pages/user/user",
     "pages/goods/list/index",
     "pages/goods/details/index",
     "pages/goods/category/index",
-    "pages/goods/search/index",
     "pages/goods/result/index",
     "pages/goods/comments/index",
-    "pages/goods/comments/create/index",
-    "pages/usercenter/name-edit/index"
+    "pages/goods/comments/create/index"
   ],
   "tabBar": {
     "custom": true,
@@ -26,7 +21,7 @@
         "text": "麦小六"
       },
       {
-        "pagePath": "pages/usercenter/index",
+        "pagePath": "pages/user/user",
         "text": "关于我们"
       }
     ]

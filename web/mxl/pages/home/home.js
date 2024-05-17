@@ -48,9 +48,6 @@ Page({
     }
   },
 
-  onPullDownRefresh() {
-    this.init();
-  },
 
   init() {
     this.loadHomePage();
@@ -96,7 +93,7 @@ Page({
     });
 
     const pageSize = this.goodListPagination.num;
-    let pageIndex = this.privateData.tabIndex * pageSize + this.goodListPagination.index + 1;
+    let pageIndex = 0
     if (fresh) {
       pageIndex = 0;
     }
@@ -117,25 +114,25 @@ Page({
     }
   },
 
-  goodListClickHandle(e) {
-    const {
-      index
-    } = e.detail;
-    const {
-      spuId
-    } = this.data.goodsList[index];
-    wx.navigateTo({
-      url: `/pages/goods/details/index?spuId=${spuId}`,
-    });
-  },
+  // goodListClickHandle(e) {
+  //   const {
+  //     index
+  //   } = e.detail;
+  //   const {
+  //     spuId
+  //   } = this.data.goodsList[index];
+  //   wx.navigateTo({
+  //     url: `/pages/goods/details/index?spuId=${spuId}`,
+  //   });
+  // },
 
-  goodListAddCartHandle() {
-    Toast({
-      context: this,
-      selector: '#t-toast',
-      message: '点击加入购物车',
-    });
-  },
+  // goodListAddCartHandle() {
+  //   Toast({
+  //     context: this,
+  //     selector: '#t-toast',
+  //     message: '点击加入购物车',
+  //   });
+  // },
 
   navToSearchPage() {
     wx.navigateTo({

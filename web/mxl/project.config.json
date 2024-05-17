@@ -68,8 +68,8 @@
           "scene": null
         },
         {
-          "name": "示例页-个人中心",
-          "pathName": "pages/usercenter/index",
+          "name": "关于我们",
+          "pathName": "pages/user/user",
           "query": "",
           "scene": null
         },

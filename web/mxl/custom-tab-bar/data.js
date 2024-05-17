@@ -5,7 +5,7 @@ export default [{
   },
   {
     icon: 'person',
-    text: '个人中心',
-    url: 'pages/usercenter/index',
+    text: '关于我们',
+    url: 'pages/user/user',
   },
 ];
