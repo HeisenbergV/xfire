@@ -1,13 +1,7 @@
 {
   "pages": [
     "pages/home/home",
-    "pages/user/user",
-    "pages/goods/list/index",
-    "pages/goods/details/index",
-    "pages/goods/category/index",
-    "pages/goods/result/index",
-    "pages/goods/comments/index",
-    "pages/goods/comments/create/index"
+    "pages/user/user"
   ],
   "tabBar": {
     "custom": true,
