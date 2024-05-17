@@ -44,15 +44,24 @@
   flex: 1 1 auto;
   background: #fff;
   border-radius: 0 0 16rpx 16rpx;
-  padding: 16rpx 24rpx 18rpx;
+  padding: 0rpx 24rpx 18rpx;
   flex-direction: column;
 }
 
 .goods-card__upper {
   display: flex;
+  width: 200px;
   flex-direction: column;
   overflow: hidden;
   flex: 1 1 auto;
+}
+
+.goods-card__upper-text {
+  display: flex;
+
+  /**垂直居中*/
+  justify-content: center;
+  /**内容居中*/
 }
 
 .goods-card__title {

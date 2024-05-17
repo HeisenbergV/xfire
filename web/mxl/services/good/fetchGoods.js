@@ -1,9 +1,15 @@
-import { config } from '../../config/index';
+import {
+  config
+} from '../../config/index';
 
 /** 获取商品列表 */
-function mockFetchGoodsList(pageIndex = 1, pageSize = 20) {
-  const { delay } = require('../_utils/delay');
-  const { getGoodsList } = require('../../model/goods');
+function mockFetchGoodsList(pageIndex = 1, pageSize = 4) {
+  const {
+    delay
+  } = require('../_utils/delay');
+  const {
+    getGoodsList
+  } = require('../../model/goods');
   return delay().then(() =>
     getGoodsList(pageIndex, pageSize).map((item) => {
       return {
@@ -19,7 +25,7 @@ function mockFetchGoodsList(pageIndex = 1, pageSize = 20) {
 }
 
 /** 获取商品列表 */
-export function fetchGoodsList(pageIndex = 1, pageSize = 20) {
+export function fetchGoodsList(pageIndex = 1, pageSize = 4) {
   if (config.useMock) {
     return mockFetchGoodsList(pageIndex, pageSize);
   }

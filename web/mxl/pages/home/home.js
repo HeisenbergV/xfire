@@ -27,7 +27,7 @@ Page({
 
   goodListPagination: {
     index: 0,
-    num: 20,
+    num: 4,
   },
 
   privateData: {
@@ -104,7 +104,7 @@ Page({
     try {
       const nextList = await fetchGoodsList(pageIndex, pageSize);
       this.setData({
-        goodsList: fresh ? nextList : this.data.goodsList.concat(nextList),
+        goodsList: nextList,
         goodsListLoadStatus: 0,
       });
 
