@@ -125,7 +125,7 @@ func (b *GoodsPrompt) Exec(args []string) bool {
 			sumWeight += ratio
 		}
 		sumWeight += binfo.Water
-		num := int(sumWeight / 80)
+		num := int(sumWeight / binfo.MaterialUnit)
 		costSum := float64(num)*GoodsInfo.Price - cost
 		pterm.DefaultBasicText.Printf(pterm.LightMagenta("%s\n"), binfo.Name)
 		pterm.DefaultBasicText.Printf(pterm.LightMagenta("一袋面原料成本约:%.2f \n"), cost)

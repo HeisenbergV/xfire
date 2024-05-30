@@ -9,6 +9,36 @@ import (
 	"gorm.io/gorm"
 )
 
+func guozijiudian() *Build {
+	bdic := make(map[string]float64)
+	bdic["面粉-冀南香5号粉"] = 25000
+	bdic["糖"] = 4000
+	bdic["盐"] = 250
+	bdic["葡萄干"] = 1000
+	bdic["苹果丁"] = 500
+	bdic["橙皮丁"] = 500
+	bdic["复配面包乳化剂"] = 1000
+	bdic["面包改良剂"] = 125
+	bdic["脱氢乙酸钠"] = 10
+	bdic["丙酸钙"] = 60
+	bdic["高糖酵母"] = 200
+	bdic["无水酥油"] = 3000
+	bdic["鸡蛋"] = 800
+	bdic["老面"] = 1500
+
+	buildData := &Build{
+		Name:         "果子面包-酒店专供",
+		Remake:       "",
+		Info:         "xxx",
+		MaterialUnit: 110,
+		Water:        10500,
+		Bakingtime:   18,
+		Bakingtem:    180,
+		BuildData:    bdic,
+	}
+	return buildData
+}
+
 func guozi() *Build {
 	bdic := make(map[string]float64)
 	bdic["面粉-冀南香5号粉"] = 25000
@@ -38,6 +68,7 @@ func guozi() *Build {
 	}
 	return buildData
 }
+
 func dalieba() *Build {
 	bdic := make(map[string]float64)
 	bdic["麦麸"] = 750
@@ -73,6 +104,9 @@ func TestBuildData(t *testing.T) {
 	}
 	g := guozi()
 	dlb := dalieba()
+	gzj := guozijiudian()
+	db.Create(gzj)
+
 	db.Create(g)
 	db.Create(dlb)
 	fmt.Println(err)
