@@ -111,3 +111,17 @@ func TestBuildData(t *testing.T) {
 	db.Create(dlb)
 	fmt.Println(err)
 }
+
+func TestProductData(t *testing.T) {
+	db, err := gorm.Open(mysql.Open("root:123456@tcp(127.0.0.1:3306)/xfire?charset=utf8&parseTime=true"))
+	if err != nil {
+		log.Panicln("err:", err.Error())
+	}
+	aa := &Goods{
+		Name:  "cccccc",
+		Ptype: Product,
+	}
+
+	db.Create(aa)
+	fmt.Println(err)
+}

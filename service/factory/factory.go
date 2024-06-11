@@ -205,13 +205,15 @@ func (f *Factory) GetGoodsList(ptype model.Goodstype, info request.PageInfo, ord
 	if err != nil {
 		return plist, total, err
 	}
+
+	offset := info.PageSize * (info.Page - 1)
+	db = db.Limit(info.PageSize).Offset(offset)
+
 	if order == "" {
 		err = db.Order("name").Find(&plist).Error
 		return plist, total, err
 	}
 
-	offset := info.PageSize * (info.Page - 1)
-	db = db.Limit(info.PageSize).Offset(offset)
 	var OrderStr string
 	// 设置有效排序key 防止sql注入
 	orderMap := make(map[string]bool, 5)

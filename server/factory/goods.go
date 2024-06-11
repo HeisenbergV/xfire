@@ -72,6 +72,57 @@ func (s *FactoryApi) Production(c *gin.Context) {
 // @accept    application/json
 // @Produce   application/json
 // @Param     data  body      request.GetById                 true "id"
+// @Success   200   {object}  response.Response{msg=string}  "展示制作工艺"
+// @Router    /api/getProductBuildInfo [post]
+func (s *FactoryApi) GetProductBuildInfo(c *gin.Context) {
+	var id request.GetById
+	err := c.ShouldBindJSON(&id)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	Goods, err := service.FactoryService.GetGoodsInfo(id.ID)
+	if err != nil {
+		global.LOG.Error("成本展示失败!", zap.Error(err))
+		response.FailWithMessage("成本展示失败", c)
+		return
+	}
+	binfo, err := service.FactoryService.GetBuildInfo(Goods.BuildID)
+	if err != nil {
+		global.LOG.Error("获取配方失败!", zap.Error(err))
+		response.FailWithMessage("获取配方失败", c)
+		return
+	}
+	cost := 0.0
+	sumWeight := 0.0
+
+	for mname, ratio := range binfo.BuildData {
+		material := global.GetMaterialInfo(mname)
+		if material == nil {
+			global.LOG.Error("获取配方失败!", zap.Error(err))
+			response.FailWithMessage(fmt.Sprintf("%s不存在", mname), c)
+			return
+		}
+		sumWeight += ratio
+		//配方总成本
+		cost += ratio / material.Unit * material.Price
+	}
+	// 配料总重量
+	sumWeight += binfo.Water
+	// 产出多少个面包
+	yield := int(sumWeight / Goods.Unit)
+	response.OkWithDetailed(response.GoodsCostResponse{
+		Yield: yield, Cost: cost, BuildInfo: *binfo,
+	}, "获取成功", c)
+}
+
+// ShowCost
+// @Tags      FactoryApi
+// @Summary   修改基础api
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data  body      request.GetById                 true "id"
 // @Success   200   {object}  response.Response{msg=string}  "展示成本"
 // @Router    /api/showCost [post]
 func (s *FactoryApi) ShowCost(c *gin.Context) {
@@ -183,7 +234,7 @@ func (s *FactoryApi) GetGoodsList(c *gin.Context) {
 // @Produce   application/json
 // @Param     data  body      request.IdsReq                 true  "ID"
 // @Success   200   {object}  response.Response{msg=string}  "删除"
-// @Router    /api/DeleteGoodsByIds [delete]
+// @Router    /factory/deleteGoodsByIds [delete]
 func (s *FactoryApi) DeleteGoodsByIds(c *gin.Context) {
 	var ids request.IdsReq
 	err := c.ShouldBindJSON(&ids)

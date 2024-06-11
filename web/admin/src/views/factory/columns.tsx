@@ -3,17 +3,24 @@ import type {
   AdaptiveConfig,
   PaginationProps
 } from "@pureadmin/table";
-import { tableData } from "./data";
 import { ref, onMounted, reactive } from "vue";
 import { clone, delay } from "@pureadmin/utils";
 import { message } from "@/utils/message";
+import forms from "./showProduct.vue";
+
+import {
+  addDialog,
+  closeDialog,
+  updateDialog,
+  closeAllDialog
+} from "@/components/ReDialog";
 
 import "plus-pro-components/es/components/dialog-form/style/css";
 import {
   type PlusColumn,
   type FieldValues,
 } from "plus-pro-components";
-
+import { getProductList,delProduct, Mianbao ,getProductBuildInfo} from "@/api/product";
 
 const visible = ref(false);
 const values = ref<FieldValues>({});
@@ -21,105 +28,115 @@ function handleEdit (index: number, row )  {
     visible.value = true;
     values.value = row
 };
+const dataList = ref<Mianbao[]>([]);
 
-function handleDelete (index: number, row )  {
-    message(`您删除了第 ${index} 行，数据为：${JSON.stringify(row)}`);
+function handleDelete(index: number, row: Mianbao) {
+  delProduct(row.id).then(response => {
+    if (response.code == 0) {
+      message(`删除成功`);
+      dataList.value.splice(index, 1);
+    } else {
+     message(`删除失败`);
+     }
+   });
 };
+
+
+function onCloseCallBackClick(s: number, row: Mianbao) {
+  addDialog({
+    title: "警告",
+    closeCallBack: ({ options, index, args }) => {
+      console.log(options, index, args);
+      let text = "";
+      if (args?.command === "sure") {
+        handleDelete(s,row)
+      } 
+    },
+    contentRenderer: () => <p>确认要删除？</p>
+  });
+}
+
+function onShowProduct(row: Mianbao) {
+   getProductBuildInfo(row.id).then(v => {
+      addDialog({
+    width: "50%",
+    title: row.name + "制作工艺",
+    contentRenderer: () => forms,
+    props: {
+      // 赋默认值
+      formInline: {
+        M: row,
+        BuildInfo: v,
+        user: "菜虚鲲",
+        region: "浙江"
+      }
+    }
+  });
+  });
+}
 
 
 export function form() {
   let columns: PlusColumn[] = [
+  {
+      label: "条码",
+      width: 80,
+      prop: "barcode",
+      valueType: "copy",
+    },
     {
       label: "名称",
-      width: 120,
+      width: 80,
       prop: "name",
       valueType: "copy",
-      tooltip: "名称最多显示6个字符"
-    },
-
-    {
-      label: "时间",
-      prop: "time",
-      valueType: "date-picker"
     },
     {
-      label: "数量",
-      prop: "number",
+      label: "品牌",
+      width: 80,
+      prop: "brand",
+      valueType: "copy",
+    },
+   {
+      label: "制作工艺",
+      width: 80,
+      prop: "build_id",
+      valueType: "cascader",
+      options: [
+      {
+        value: "0",
+        label: "陕西",
+      },
+      {
+        value: "1",
+        label: "山西",
+      }
+    ]
+    },
+    {
+      label: "重量",
+      prop: "unit",
+      tooltip: "单位g",
       valueType: "input-number",
-      fieldProps: { precision: 2, step: 2 }
     },
     {
-      label: "地区",
-      prop: "place",
-      tooltip: "请精确到门牌号",
-      fieldProps: {
-        placeholder: "请精确到门牌号"
-      }
+      label: "单价",
+    prop: "price",
+    valueType: "input-number",
     },
-    {
-      label: "要求",
-      prop: "demand",
-      valueType: "checkbox",
-      options: [
-        {
-          label: "四六级",
-          value: "0"
-        },
-        {
-          label: "计算机二级证书",
-          value: "1"
-        },
-        {
-          label: "普通话证书",
-          value: "2"
-        }
-      ]
-    },
-    {
-      label: "梦想",
-      prop: "gift",
-      valueType: "radio",
-      options: [
-        {
-          label: "诗",
-          value: "0"
-        },
-        {
-          label: "远方",
-          value: "1"
-        },
-        {
-          label: "美食",
-          value: "2"
-        }
-      ]
-    },
-    {
-      label: "到期时间",
-      prop: "endTime",
-      valueType: "date-picker",
-      fieldProps: {
-        type: "datetimerange",
-        startPlaceholder: "请选择开始时间",
-        endPlaceholder: "请选择结束时间"
-      }
-    },
-    {
-      label: "说明",
-      prop: "desc",
-      valueType: "textarea",
-      fieldProps: {
-        maxlength: 10,
-        showWordLimit: true,
-        autosize: { minRows: 2, maxRows: 4 }
-      }
+     {
+    label: "简介",
+    prop: "remake",
+    valueType: "textarea",
+    fieldProps: {
+      maxlength: 10,
+      showWordLimit: true,
+      autosize: { minRows: 2, maxRows: 4 }
     }
+  }
   ];
-
 
   const handleAllConfirm = async (handleSubmit: () => Promise<boolean>) => {
   const isPass = await handleSubmit()
-    message("fff");
     isPass && (visible.value = false)
   }
 
@@ -137,16 +154,20 @@ export function form() {
 }
 
 export function useColumns() {
-  const dataList = ref([]);
   const loading = ref(true);
   const datacolumns: TableColumnList = [
      {
       label: "条码",
       prop: "barcode"
-    }, {
+    },{
       label: "产品",
-      prop: "name"
-    }, {
+      prop: "name",
+      cellRenderer: ({ row, index }) => (
+     <el-tag onClick={() => onShowProduct(row)}>
+          <p style="text-decoration: underline;">{ row.name}</p>
+            </el-tag>
+      )
+    },{
       label: "品牌",
       prop: "brand"
     },
@@ -164,14 +185,14 @@ export function useColumns() {
        cellRenderer: ({ index, row }) => (
         <>
           <el-button size="small" onClick={() => handleEdit(index + 1, row)}>
-            Edit
+            修改
           </el-button>
           <el-button
             size="small"
             type="danger"
-            onClick={() => handleDelete(index + 1, row)}
+            onClick={() => onCloseCallBackClick(index,row)}
           >
-            Delete
+            删除
           </el-button>
         </>
       )
@@ -189,6 +210,7 @@ export function useColumns() {
     small: false
   });
 
+    
   /** 加载动画配置 */
   const loadingConfig = reactive<LoadingConfig>({
     text: "正在加载第一页...",
@@ -219,27 +241,35 @@ export function useColumns() {
     // zIndex: 100
   };
 
-  function onSizeChange(val) {
-    console.log("onSizeChange", val);
-  }
-
   function onCurrentChange(val) {
     loadingConfig.text = `正在加载第${val}页...`;
     loading.value = true;
+   
     delay(600).then(() => {
-      loading.value = false;
+      getCardListData();
     });
   }
+  
+  const getCardListData = async () => {
+    try {
+        let data = await getProductList({
+          page: pagination.currentPage,
+          pageSize: pagination.pageSize,
+          ptype: "成品",
+          orderKey: "barcode"
+        });
+      
+        pagination.total = data.data.total;
+        dataList.value = data.data.list;
+        loading.value = false;
+    } finally {
+      setTimeout(() => {}, 500);
+    }
+  };
 
   onMounted(() => {
     delay(600).then(() => {
-      const newList = [];
-      newList.push(clone(tableData, true));
-      newList.flat(Infinity).forEach((item, index) => {
-        dataList.value.push({ id: index, ...item });
-      });
-      pagination.total = dataList.value.length;
-      loading.value = false;
+      getCardListData();
     });
   });
 
@@ -250,7 +280,6 @@ export function useColumns() {
     pagination,
     loadingConfig,
     adaptiveConfig,
-    onSizeChange,
     onCurrentChange
   };
 }

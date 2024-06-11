@@ -17,7 +17,7 @@ func FactoryRouter(r *gin.Engine) {
 
 	factoryRouter.POST("deleteBrandByIds", api.DeleteBrandByIds)
 	factoryRouter.POST("deleteBuildByIds", api.DeleteBuildByIds)
-	factoryRouter.POST("deleteGoodsByIds", api.DeleteGoodsByIds)
+	factoryRouter.DELETE("deleteGoodsByIds", api.DeleteGoodsByIds)
 
 	factoryRouter.POST("getBrandList", api.GetBrandList)
 	factoryRouter.POST("getBuildList", api.GetBuildList)
@@ -27,6 +27,7 @@ func FactoryRouter(r *gin.Engine) {
 	factoryRouter.POST("updateBuild", api.UpdateBuild)
 	factoryRouter.POST("updateGoods", api.UpdateGoods)
 	factoryRouter.POST("showCost", api.ShowCost)
+	factoryRouter.POST("getProductBuildInfo", api.GetProductBuildInfo)
 }
 
 func NewRouter(r *gin.Engine) {
