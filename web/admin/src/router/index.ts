@@ -5,7 +5,6 @@ import NProgress from "@/utils/progress";
 import { buildHierarchyTree } from "@/utils/tree";
 import remainingRouter from "./modules/remaining";
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
-import { usePermissionStoreHook } from "@/store/modules/permission";
 import { isUrl, openLink, storageLocal, isAllEmpty } from "@pureadmin/utils";
 import {
   ascending,
@@ -97,7 +96,6 @@ export function resetRouter() {
       );
     }
   });
-  usePermissionStoreHook().clearAllCachePage();
 }
 
 /** 路由白名单 */
@@ -148,7 +146,6 @@ router.beforeEach((to: ToRouteType, _from, next) => {
     } else {
       // 刷新
       if (
-        usePermissionStoreHook().wholeMenus.length === 0 &&
         to.path !== "/login"
       ) {
         initRouter().then((router: Router) => {
