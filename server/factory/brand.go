@@ -83,7 +83,7 @@ func (s *FactoryApi) GetBrandList(c *gin.Context) {
 // @Produce   application/json
 // @Param     data  body      request.IdsReq                 true  "ID"
 // @Success   200   {object}  response.Response{msg=string}  "删除选中品牌"
-// @Router    /api/deleteBrandByIds [delete]
+// @Router    /factory/deleteBrandByIds [delete]
 func (s *FactoryApi) DeleteBrandByIds(c *gin.Context) {
 	var ids request.IdsReq
 	err := c.ShouldBindJSON(&ids)
@@ -108,7 +108,7 @@ func (s *FactoryApi) DeleteBrandByIds(c *gin.Context) {
 // @Produce   application/json
 // @Param     data  body      model.Brand                  true "品牌信息"
 // @Success   200   {object}  response.Response{msg=string}  "修改品牌"
-// @Router    /api/updateBrand [post]
+// @Router    /factory/updateBrand [post]
 func (s *FactoryApi) UpdateBrand(c *gin.Context) {
 	var api model.Brand
 	err := c.ShouldBindJSON(&api)

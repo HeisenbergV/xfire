@@ -6,7 +6,6 @@ import type {
 import { ref, onMounted, reactive } from "vue";
 import { clone, delay } from "@pureadmin/utils";
 import { message } from "@/utils/message";
-import forms from "./showProduct.vue";
 
 import {
   addDialog,
@@ -56,34 +55,9 @@ function onCloseCallBackClick(s: number, row: Mianbao) {
   });
 }
 
-function onShowProduct(row: Mianbao) {
-   getProductBuildInfo(row.id).then(v => {
-      addDialog({
-    width: "50%",
-    title: row.name + "制作工艺",
-    contentRenderer: () => forms,
-    props: {
-      // 赋默认值
-      formInline: {
-        M: row,
-        BuildInfo: v,
-        user: "菜虚鲲",
-        region: "浙江"
-      }
-    }
-  });
-  });
-}
-
 
 export function form() {
   let columns: PlusColumn[] = [
-  {
-      label: "条码",
-      width: 80,
-      prop: "barcode",
-      valueType: "copy",
-    },
     {
       label: "名称",
       width: 80,
@@ -95,22 +69,6 @@ export function form() {
       width: 80,
       prop: "brand",
       valueType: "copy",
-    },
-   {
-      label: "制作工艺",
-      width: 80,
-      prop: "build_id",
-      valueType: "cascader",
-      options: [
-      {
-        value: "0",
-        label: "陕西",
-      },
-      {
-        value: "1",
-        label: "山西",
-      }
-    ]
     },
     {
       label: "重量",
@@ -157,16 +115,8 @@ export function useColumns() {
   const loading = ref(true);
   const datacolumns: TableColumnList = [
      {
-      label: "条码",
-      prop: "barcode"
-    },{
       label: "产品",
       prop: "name",
-      cellRenderer: ({ row, index }) => (
-     <el-tag onClick={() => onShowProduct(row)}>
-          <p style="text-decoration: underline;">{ row.name}</p>
-            </el-tag>
-      )
     },{
       label: "品牌",
       prop: "brand"
@@ -255,8 +205,8 @@ export function useColumns() {
         let data = await getProductList({
           page: pagination.currentPage,
           pageSize: pagination.pageSize,
-          ptype: "成品",
-          orderKey: "barcode"
+          ptype: "原料",
+          orderKey: "id"
         });
       
         pagination.total = data.data.total;

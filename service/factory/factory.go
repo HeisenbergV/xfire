@@ -67,13 +67,6 @@ func (f *Factory) DelBrand(id []int) error {
 }
 
 func (f *Factory) UpdateBrand(brand model.Brand) error {
-	var duplicateBrand model.Brand
-	if err := global.DB.Where("name = ?", brand.Name).First(&duplicateBrand).Error; err != nil {
-		if !errors.Is(err, gorm.ErrRecordNotFound) {
-			return err
-		}
-	}
-
 	return global.DB.Where("id=?", brand.ID).Updates(&model.Brand{Name: brand.Name}).Error
 }
 

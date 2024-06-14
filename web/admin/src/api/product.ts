@@ -48,12 +48,31 @@ export type Product = {
   };
 };
 
+
+export type Brand = {
+  id: number;
+  name: string;
+  created_at: Date;
+};
+
+export type BrandResponse = {
+  code: number;
+  msg: string;
+  data: {
+    list: Array<Brand>;
+    total: number;
+  };
+};
+
+
 export type Response = {
   code: number;
   msg: string;
   data: object;
 }
 
+
+//product
 export const getProductList = (data?: object) => {
   let ee = http.request<Product>("post", baseUrlApi("/factory/getGoodsList"), { data });
   return ee;
@@ -68,4 +87,21 @@ export const getProductBuildInfo = (id?: number) => {
 export const delProduct = (id?: number) => {
   const idsToDelete = { ids: [id] };
   return http.request<Response>("delete", baseUrlApi("/factory/deleteGoodsByIds"), { data: idsToDelete });
+};
+
+
+// brand
+export const getBrandList = (data?: object) => {
+  let ee = http.request<BrandResponse>("post", baseUrlApi("/factory/getBrandList"), { data });
+  return ee;
+};
+
+export const updateBrand = (id?:number,name?: string) => {
+  const data = { id:id,name: name };
+  return http.request<Response>("post", baseUrlApi("/factory/updateBrand"), { data });
+};
+
+export const delBrand = (id?: number) => {
+  const idsToDelete = { ids: [id] };
+  return http.request<Response>("delete", baseUrlApi("/factory/DeleteBrandByIds"), { data: idsToDelete });
 };

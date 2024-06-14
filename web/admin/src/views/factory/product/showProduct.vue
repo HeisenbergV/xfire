@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { Mianbao, getProductBuildInfo, GoodsCostResponse } from "@/api/product";
+import { ref } from "vue";
+import { Mianbao, GoodsCostResponse } from "@/api/product";
 
 // 声明 props 类型
 export interface Form2Props {
