@@ -16,18 +16,20 @@ import {
 } from "@/components/ReDialog";
 
 import "plus-pro-components/es/components/dialog-form/style/css";
+import { type PlusColumn, type FieldValues } from "plus-pro-components";
 import {
-  type PlusColumn,
-  type FieldValues,
-} from "plus-pro-components";
-import { getProductList,delProduct, Mianbao ,getProductBuildInfo} from "@/api/product";
+  getProductList,
+  delProduct,
+  Mianbao,
+  getProductBuildInfo
+} from "@/api/product";
 
 const visible = ref(false);
 const values = ref<FieldValues>({});
-function handleEdit (index: number, row )  {
-    visible.value = true;
-    values.value = row
-};
+function handleEdit(index: number, row) {
+  visible.value = true;
+  values.value = row;
+}
 const dataList = ref<Mianbao[]>([]);
 
 function handleDelete(index: number, row: Mianbao) {
@@ -36,11 +38,10 @@ function handleDelete(index: number, row: Mianbao) {
       message(`删除成功`);
       dataList.value.splice(index, 1);
     } else {
-     message(`删除失败`);
-     }
-   });
-};
-
+      message(`删除失败`);
+    }
+  });
+}
 
 function onCloseCallBackClick(s: number, row: Mianbao) {
   addDialog({
@@ -49,98 +50,97 @@ function onCloseCallBackClick(s: number, row: Mianbao) {
       console.log(options, index, args);
       let text = "";
       if (args?.command === "sure") {
-        handleDelete(s,row)
-      } 
+        handleDelete(s, row);
+      }
     },
     contentRenderer: () => <p>确认要删除？</p>
   });
 }
 
 function onShowProduct(row: Mianbao) {
-   getProductBuildInfo(row.id).then(v => {
-      addDialog({
-    width: "50%",
-    title: row.name + "制作工艺",
-    contentRenderer: () => forms,
-    props: {
-      // 赋默认值
-      formInline: {
-        M: row,
-        BuildInfo: v,
-        user: "菜虚鲲",
-        region: "浙江"
+  getProductBuildInfo(row.id).then(v => {
+    addDialog({
+      width: "50%",
+      title: row.name + "制作工艺",
+      contentRenderer: () => forms,
+      props: {
+        // 赋默认值
+        formInline: {
+          M: row,
+          BuildInfo: v,
+          user: "菜虚鲲",
+          region: "浙江"
+        }
       }
-    }
-  });
+    });
   });
 }
 
-
 export function form() {
   let columns: PlusColumn[] = [
-  {
+    {
       label: "条码",
       width: 80,
       prop: "barcode",
-      valueType: "copy",
+      valueType: "copy"
     },
     {
       label: "名称",
       width: 80,
       prop: "name",
-      valueType: "copy",
+      valueType: "copy"
     },
     {
       label: "品牌",
       width: 80,
       prop: "brand",
-      valueType: "copy",
+      valueType: "copy"
     },
-   {
+    {
       label: "制作工艺",
       width: 80,
       prop: "build_id",
-     valueType: "cascader",
+      valueType: "cascader",
       options: [
-      {
-        value: "0",
-        label: "陕西",
-      },
-      {
-        value: "1",
-        label: "山西",
-      }
-    ]
+        {
+          value: "0",
+          label: "陕西"
+        },
+        {
+          value: "1",
+          label: "山西"
+        }
+      ]
     },
     {
       label: "重量",
       prop: "unit",
       tooltip: "单位g",
-      valueType: "input-number",
+      valueType: "input-number"
     },
     {
       label: "单价",
-    prop: "price",
-    valueType: "input-number",
+      prop: "price",
+      valueType: "input-number"
     },
-     {
-    label: "简介",
-    prop: "remake",
-    valueType: "textarea",
-    fieldProps: {
-      maxlength: 10,
-      showWordLimit: true,
-      autosize: { minRows: 2, maxRows: 4 }
+    {
+      label: "简介",
+      prop: "remake",
+      valueType: "textarea",
+      fieldProps: {
+        maxlength: 10,
+        showWordLimit: true,
+        autosize: { minRows: 2, maxRows: 4 }
+      }
     }
-  }
   ];
 
   const handleAllConfirm = async (handleSubmit: () => Promise<boolean>) => {
-  const isPass = await handleSubmit()
-    isPass && (visible.value = false)
-  }
+    const isPass = await handleSubmit();
+    isPass && (visible.value = false);
+  };
 
- function handleCancel() {
+  function handleCancel() {
     visible.value = false;
   }
 
@@ -150,24 +150,26 @@ export function form() {
     handleAllConfirm,
     handleCancel,
     values
-  }
+  };
 }
 
 export function useColumns() {
   const loading = ref(true);
   const datacolumns: TableColumnList = [
-     {
+    {
       label: "条码",
       prop: "barcode"
-    },{
+    },
+    {
       label: "产品",
       prop: "name",
       cellRenderer: ({ row, index }) => (
-     <el-tag onClick={() => onShowProduct(row)}>
-          <p style="text-decoration: underline;">{ row.name}</p>
-            </el-tag>
+        <el-tag onClick={() => onShowProduct(row)}>
+          <p style="text-decoration: underline;">{row.name}</p>
+        </el-tag>
       )
-    },{
+    },
+    {
       label: "品牌",
       prop: "brand"
     },
@@ -178,11 +180,13 @@ export function useColumns() {
     {
       label: "重量/g",
       prop: "unit"
-    },  {
+    },
+    {
       label: "单价",
       prop: "price"
-    },  {
-       cellRenderer: ({ index, row }) => (
+    },
+    {
+      cellRenderer: ({ index, row }) => (
         <>
           <el-button size="small" onClick={() => handleEdit(index + 1, row)}>
             修改
@@ -190,7 +194,7 @@ export function useColumns() {
           <el-button
             size="small"
             type="danger"
-            onClick={() => onCloseCallBackClick(index,row)}
+            onClick={() => onCloseCallBackClick(index, row)}
           >
             删除
           </el-button>
@@ -210,7 +214,6 @@ export function useColumns() {
     small: false
   });
 
-    
   /** 加载动画配置 */
   const loadingConfig = reactive<LoadingConfig>({
     text: "正在加载第一页...",
@@ -244,24 +247,24 @@ export function useColumns() {
   function onCurrentChange(val) {
     loadingConfig.text = `正在加载第${val}页...`;
     loading.value = true;
-   
+
     delay(600).then(() => {
       getCardListData();
     });
   }
-  
+
   const getCardListData = async () => {
     try {
-        let data = await getProductList({
-          page: pagination.currentPage,
-          pageSize: pagination.pageSize,
-          ptype: "成品",
-          orderKey: "barcode"
-        });
-      
-        pagination.total = data.data.total;
-        dataList.value = data.data.list;
-        loading.value = false;
+      let data = await getProductList({
+        page: pagination.currentPage,
+        pageSize: pagination.pageSize,
+        ptype: "成品",
+        orderKey: "barcode"
+      });
+
+      pagination.total = data.data.total;
+      dataList.value = data.data.list;
+      loading.value = false;
     } finally {
       setTimeout(() => {}, 500);
     }
